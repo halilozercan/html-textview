@@ -97,9 +97,9 @@ public class HtmlTextView extends JellyBeanSpanFixTextView {
         html = htmlTagHandler.overrideTags(html);
 
         if (removeTrailingWhiteSpace) {
-            setText(removeHtmlBottomPadding(Html.fromHtml(html, imageGetter, htmlTagHandler)));
+            setText(removeHtmlBottomPadding(fromHtml(html, imageGetter, htmlTagHandler)));
         } else {
-            setText(Html.fromHtml(html, imageGetter, htmlTagHandler));
+            setText(fromHtml(html, imageGetter, htmlTagHandler));
         }
 
         // make links work
@@ -175,5 +175,18 @@ public class HtmlTextView extends JellyBeanSpanFixTextView {
             text = text.subSequence(0, text.length() - 1);
         }
         return text;
+    }
+    
+    /**
+     * Html.fromHtml is deprecated in API level 24. This is a wrapper method for fromHtml usages in this library.
+     */
+    static public Spanned fromHtml(String source, 
+                Html.ImageGetter imageGetter, 
+                Html.TagHandler tagHandler) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY, imageGetter, tagHandler);
+        } else {
+            return Html.fromHtml(source, imageGetter, tagHandler);
+        }
     }
 }
